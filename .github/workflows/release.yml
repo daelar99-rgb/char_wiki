@@ -1,0 +1,50 @@
+# 챠위키 릴리즈 자동화 v1.0.0 (이매진 릴리즈 자동화 v1.1.0 과 같은 꼴)
+# 깃허브 레포에 .github/workflows/release.yml 로 넣는다.
+# main 의 char_wiki.js 가 바뀌면 //@version 을 읽어 릴리즈 vX.Y.Z 를 만들고 char_wiki.js 를 첨부한다.
+# 챠위키.js 는 옛 업데이트 주소용으로 2.8.1 에 멈춰 둔다.
+# 같은 판 릴리즈가 이미 있으면 char_wiki.js 만 바꿔 올린다 (같은 판 수정).
+# Actions 탭의 Run workflow 로 손으로 돌릴 수도 있다.
+name: release
+
+on:
+  push:
+    branches: [main]
+    paths: ['char_wiki.js']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read version
+        id: ver
+        run: |
+          v=$(grep -m1 '^//@version ' char_wiki.js | awk '{print $2}' | tr -d '\r')
+          if [ -z "$v" ]; then echo "char_wiki.js 에 //@version 줄이 없습니다" >&2; exit 1; fi
+          echo "v=$v" >> "$GITHUB_OUTPUT"
+
+      - name: Create or update release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          V: ${{ steps.ver.outputs.v }}
+        run: |
+          if gh release view "v$V" >/dev/null 2>&1; then
+            gh release upload "v$V" char_wiki.js --clobber
+          else
+            if [ -f README.md ]; then
+              # README 첫 줄의 판 번호를 이번 판으로 맞춰 본문으로 쓴다
+              sed -E "1s/v[0-9]+\.[0-9]+\.[0-9]+/v$V/" README.md > notes.md
+            else
+              echo "챠위키 v$V" > notes.md
+            fi
+            gh release create "v$V" char_wiki.js \
+              --title "챠위키 v$V (RISU Plugin)" \
+              --notes-file notes.md \
+              --target "$GITHUB_SHA" \
+              --latest
+          fi
