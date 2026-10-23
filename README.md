@@ -1,5 +1,8 @@
 # 챠위키 v2.8.1
 
+봇 설명과 로어북을 읽고, 모델이 나무위키처럼 인물 문서를 써 주는 RisuAI 플러그인입니다.
+인물 목록·정보 상자·목차·각주로 이루어진 위키를 봇마다 따로 저장합니다.
+
 ## 설치
 
 1. RisuAI 설정 → 플러그인 → ＋ 를 누르고 `char_wiki.js` 를 고릅니다. 파일은 [Releases](https://github.com/daelar99-rgb/char_wiki/releases/latest) 에서 받습니다.
