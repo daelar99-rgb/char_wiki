@@ -1,15 +1,18 @@
 //@name char_wiki
-//@display-name 📖 챠위키 v2.7.0
+//@display-name 📖 챠위키 v2.8.0
 //@api 3.0
-//@version 2.7.0
+//@version 2.8.0
+//@update-url https://raw.githubusercontent.com/daelar99-rgb/char_wiki/main/%EC%B1%A0%EC%9C%84%ED%82%A4.js
+//@link https://github.com/daelar99-rgb/char_wiki 깃허브
 //@arg source_limit int 한 번에 모델에 보낼 원문 최대 글자 수 (비우면 40000)
 
 (async () => {
     'use strict';
     const api = typeof Risuai !== 'undefined' ? Risuai : risuai;
     const LOG = '[챠위키]';
-    const VERSION = '2.7.0';
+    const VERSION = '2.8.0';
     const DEV_URL = 'https://github.com/daelar99-rgb';
+    const UPDATE_URL = 'https://raw.githubusercontent.com/daelar99-rgb/char_wiki/main/%EC%B1%A0%EC%9C%84%ED%82%A4.js';
     const GH_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>';
     const STORE_PREFIX = 'wiki:';
     const doc = document;
@@ -1506,6 +1509,64 @@ html:has(body.cw-on){background:transparent;overflow-y:scroll}
 .nw-idx th,.nw-idx td{padding:5px 8px;border:1px solid #e5e5e5;text-align:left;vertical-align:top}
 .nw-idx th{width:30%;white-space:nowrap;background:#fafafa}
 .nw-idx th i{display:inline-block;width:.7em;height:.7em;margin-right:6px;background:var(--tc)}
+/* 2.8.0 업데이트 탭 — 탭 줄의 주황 점과 업데이트 화면(리수 화면을 본뜬 그림 다섯 장) */
+.cw-seg .sg-upd{display:inline-flex;align-items:center;gap:5px}
+.cw-seg .sg-ic{flex:none;display:block;width:15px;height:15px}
+.sg-dot{flex:none;display:block;width:8px;height:8px;border-radius:50%;background:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.25),0 0 6px rgba(245,158,11,.8)}
+.up-top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:0 0 14px;padding:12px 14px;color:#e8ebf1;background:#141c2e}
+.up-top-tx{flex:1 1 280px;min-width:0;line-height:1.45}
+.up-top-tx b{display:block;font-size:.95rem;color:#fff}
+.up-top-tx span{display:block;margin-top:3px;font-size:.76rem;color:#b9c1cf}
+.up-act{flex:none;display:flex;gap:6px}
+.cw .up-no{padding:6px 12px;font-size:.78rem;color:#b9c1cf;background:transparent;border:1px solid #4a5468}
+.cw .up-no:hover{background:#22304d}
+.up-steps{display:flex;flex-direction:column;gap:12px}
+.up-step{display:flex;flex-direction:column;min-width:0;background:#fff;border:1px solid var(--line)}
+.up-cap{display:flex;align-items:flex-start;gap:9px;min-height:54px;padding:10px 11px;font-size:.8rem;line-height:1.45}
+.up-cap b{color:var(--ink)}
+.up-cap small{display:block;margin-top:2px;font-size:.7rem;color:var(--muted)}
+.up-n{flex:none;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;font-size:.78rem;font-weight:800;color:#1b1b1b;background:#fbbf24}
+.up-fig{position:relative;flex:1 1 auto;display:flex;min-height:190px;overflow:hidden;color:#e6e7ee;background:#1f2029;font-size:.72rem;line-height:1.3}
+.up-i{display:inline-flex;flex:none;width:16px;height:16px}
+.up-i svg{display:block;width:100%;height:100%}
+.up-hit{position:relative;display:inline-flex;outline:2px solid #fbbf24;outline-offset:3px;animation:up-ring 1.4s ease-in-out infinite}
+@keyframes up-ring{0%,100%{box-shadow:0 0 0 0 rgba(251,191,36,.55)}50%{box-shadow:0 0 0 9px rgba(251,191,36,0)}}
+.up-cur{position:absolute;right:-15px;bottom:-19px;z-index:2;width:20px;height:20px;pointer-events:none}
+.up-cur svg{display:block;width:100%;height:100%;filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
+.up-scr{flex:1 1 auto;display:flex}
+.up-side{flex:none;display:flex;flex-direction:column;align-items:center;gap:9px;width:62px;padding:10px 0;background:#181920;border-right:1px solid #33354a}
+.up-ham{display:inline-flex;align-items:center;justify-content:center;width:42px;height:22px;color:#fff;background:#6b7080}
+.up-pop{display:flex;flex-direction:column;align-items:center;gap:9px;width:52px;padding:8px 0;color:#e6e7ee;background:#1f2029;border-bottom:1px solid #44475a}
+.up-pop .up-i{width:18px;height:18px}
+.up-av{display:block;flex:none;width:30px;height:30px;border-radius:50%;background:#3a3c4e}
+.up-chat{flex:1 1 auto;display:flex;flex-direction:column;gap:9px;padding:14px 12px}
+.up-chat i{display:block;height:9px;background:#34364a}
+.up-chat i.me{align-self:flex-end;background:#2d3c63}
+.up-menu{flex:1 1 auto;display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:10px 14px}
+.up-mi{display:inline-flex;align-items:center;gap:6px;padding:2px 4px;color:#b7b9c8}
+.up-mi.on{font-weight:700;color:#fff}
+.up-mi .up-i{width:13px;height:13px}
+.up-plug{flex:1 1 auto;display:flex;flex-direction:column;padding:12px 14px}
+.up-pt{font-size:1rem;color:#fff}
+.up-warn{margin:3px 0 9px;font-size:.66rem;color:#ff5555}
+.up-list{border:1px solid #44475a;padding:2px 10px}
+.up-row{display:flex;align-items:center;gap:11px;padding:9px 0;border-top:1px solid #44475a;color:#9aa0b4}
+.up-row:first-child{border-top:0}
+.up-row.dim{opacity:.45}
+.up-pn{flex:1 1 auto;min-width:0;font-weight:700;color:#e6e7ee}
+.up-pn em{margin-left:6px;font-style:normal;font-weight:400;color:#9aa0b4}
+.up-i.g{color:#4ade80}
+.up-dlg{flex:1 1 auto;display:flex;align-items:center;justify-content:center;padding:12px;background:rgba(0,0,0,.35)}
+.up-box{width:100%;max-width:220px;padding:12px;background:#282a36;border:1px solid #44475a}
+.cw .up-box p{margin:0 0 12px;font-size:.72rem;line-height:1.5;color:#e6e7ee}
+.up-yn{display:flex;gap:10px}
+.up-yes,.up-no2{display:inline-flex;align-items:center;justify-content:center;width:64px;height:24px;font-weight:700}
+.up-yes{color:#fff;background:#3b82f6}
+.up-no2{color:#e6e7ee;background:#44475a}
+.up-after{margin-top:14px;padding:11px 14px;font-size:.78rem;line-height:1.55;background:var(--paper2);border-left:3px solid #fbbf24}
+.up-after ul{margin:5px 0 0;padding-left:18px}
+.up-after li+li{margin-top:3px}
+@media (max-width:600px){.up-act{width:100%}.cw .up-no{flex:1 1 0}}
 /* 아래 바 */
 .cw-foot{position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;padding:10px 16px 12px;border-top:1px solid var(--line);font-size:.72rem;color:var(--muted);background:var(--paper2)}
 @media (max-width:600px){
@@ -1529,6 +1590,7 @@ html:has(body.cw-on){background:transparent;overflow-y:scroll}
   .wk-list{grid-template-columns:repeat(4,minmax(0,1fr))}
   .cw-brand small{display:none}
   .cw-seg button{min-width:0;padding:0 10px}
+  .cw-seg .sg-upd .sg-tx{display:none}
   .cw-btn{gap:3px;padding:0 8px;font-size:.76rem}
 }
 `;
@@ -1615,7 +1677,7 @@ html:has(body.cw-on){background:transparent;overflow-y:scroll}
         ui.lastTab = ui.tab;
         ui.lastSel = st.sel;
         ui.root.style.setProperty('--fz', String(FONTS.find(x => x[0] === st.font)?.[2] ?? 1));
-        ui.root.replaceChildren(renderHead(), ui.tab === 'set' ? renderSettings() : renderWiki(), renderFoot());
+        ui.root.replaceChildren(renderHead(), ui.tab === 'set' ? renderSettings() : ui.tab === 'upd' ? renderUpdatePage() : renderWiki(), renderFoot());
         fitNames();
         scroller.scrollTop = keep;
     }
@@ -1639,20 +1701,118 @@ html:has(body.cw-on){background:transparent;overflow-y:scroll}
     const lineSvg = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
     const SVG_X = lineSvg('<path d="M18 6 6 18M6 6l12 12"/>');
     const SVG_INFO = lineSvg('<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/>');
+    const SVG_UPD = lineSvg('<path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 21h16"/>');
     const SVG_ALERT = lineSvg('<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/>');
     
     const closeButton = () => h('button', { class: 'cw-x', type: 'button', 'aria-label': '닫기', title: '닫기 (Esc)', onclick: closePanel, html: SVG_X });
 
     function renderHead(noTabs) {
-        const tab = (id, label) => h('button', {
-            type: 'button', class: ui.tab === id ? 'on' : '', 'aria-pressed': ui.tab === id ? 'true' : 'false',
+        const tab = (id, label, cls) => h('button', {
+            type: 'button', class: (ui.tab === id ? 'on' : '') + (cls ? ' ' + cls : ''), 'aria-pressed': ui.tab === id ? 'true' : 'false',
             onclick: () => { if (ui.tab !== id) { ui.tab = id; render(); } },
         }, label);
         const name = noTabs ? '' : st.wiki?.wikiName;
         return h('header', { class: 'cw-head' },
             h('div', { class: 'cw-brand' }, h('i', { html: ICON_SVG }), h('b', null, name || '챠위키'), name ? h('small', null, '챠위키') : null),
-            noTabs ? null : h('nav', { class: 'cw-seg', 'aria-label': '패널' }, tab('wiki', '챠위키'), tab('set', '설정')),
+            noTabs ? null : h('nav', { class: 'cw-seg', 'aria-label': '패널' }, tab('wiki', '챠위키'), tab('set', '설정'),
+                updOn() ? tab('upd', [h('i', { class: 'sg-ic', html: SVG_UPD }), h('span', { class: 'sg-tx' }, '업데이트'), h('i', { class: 'sg-dot', 'aria-hidden': 'true' })], 'sg-upd') : null),
             closeButton());
+    }
+
+    const upd = { latest: '', skip: '', checked: false };
+    const verCmp = (a, b) => {
+        const x = String(a).split('.').map(n => parseInt(n, 10) || 0), y = String(b).split('.').map(n => parseInt(n, 10) || 0);
+        for (let i = 0; i < Math.max(x.length, y.length); i++) if ((x[i] ?? 0) !== (y[i] ?? 0)) return (x[i] ?? 0) > (y[i] ?? 0) ? 1 : -1;
+        return 0;
+    };
+    async function checkUpdate() {
+        if (upd.checked) return;
+        try {
+            upd.skip = String(await api.pluginStorage.getItem('wiki_updSkip').catch(() => '') ?? '');
+            const res = await api.nativeFetch(UPDATE_URL, { method: 'GET', headers: { Range: 'bytes=0-512' } });
+            if (!res.ok) return;
+            const ver = (await res.text()).match(/\/\/@version\s+(\S+)/)?.[1] ?? '';
+            upd.checked = true;
+            if (ver && verCmp(ver, VERSION) > 0) { upd.latest = ver; if (ui.root?.querySelector('.cw-seg')) render(); }
+        } catch (error) { console.warn(LOG, 'update check', error); }
+    }
+    const updOn = () => !!upd.latest && upd.skip !== upd.latest;
+
+    const UP_ICON = {
+        list: '<path d="M4 6h16M4 12h16M4 18h16"/>',
+        set: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',
+        home: '<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>',
+        shell: '<path d="M4 17l6-6-6-6M12 19h8"/>',
+        grid: '<path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/>',
+        link: '<path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/>',
+        plus: '<path d="M12 5v14M5 12h14"/>',
+        power: '<path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/>',
+        trash: '<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/>',
+        code: '<path d="M8 6l-6 6 6 6M16 6l6 6-6 6"/>',
+    };
+    const upIcon = (k, cls) => h('span', { class: 'up-i' + (cls ? ' ' + cls : ''), 'aria-hidden': 'true', html: lineSvg(UP_ICON[k]) });
+    function upHit(...kids) {
+        const cur = h('span', { class: 'up-cur', 'aria-hidden': 'true', html: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 2l14 10-6.2 1.2L8.6 20z" fill="#fff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/></svg>' });
+        return h('span', { class: 'up-hit' }, ...kids, cur);
+    }
+    function upStep(n, cap, sub, fig, alt) {
+        return h('div', { class: 'up-step' },
+            h('div', { class: 'up-cap' }, h('span', { class: 'up-n' }, String(n)), h('div', null, h('b', null, cap), sub ? h('small', null, sub) : null)),
+            h('div', { class: 'up-fig', role: 'img', 'aria-label': alt }, fig));
+    }
+    function upSide(hitList, menu) {
+        const bar = h('span', { class: 'up-ham' }, upIcon('list'));
+        return h('div', { class: 'up-side' },
+            hitList ? upHit(bar) : bar,
+            menu ? h('div', { class: 'up-pop' }, upHit(upIcon('set')), upIcon('home'), upIcon('shell'), upIcon('grid')) : null,
+            h('i', { class: 'up-av' }), h('i', { class: 'up-av' }), h('i', { class: 'up-av' }));
+    }
+    const upChat = () => h('div', { class: 'up-chat' }, h('i', { style: 'width:72%' }), h('i', { style: 'width:54%' }), h('i', { class: 'me', style: 'width:46%' }), h('i', { style: 'width:64%' }));
+
+    function renderUpdatePage() {
+        const pane = h('section', { class: 'cw-pane cw-upd' + (ui.animPane ? ' anim' : '') });
+        const later = () => { upd.skip = upd.latest; savePref('wiki_updSkip', upd.latest); ui.tab = 'wiki'; render(); };
+        const MENU = ['채팅 봇', '페르소나', '기타 봇', '소리 및 디스플레이', '언어', '접근성', '모듈', '플러그인', '계정 & 파일', '단축키'];
+        const row = (name, ver, plus, dim) => h('div', { class: 'up-row' + (dim ? ' dim' : '') },
+            h('span', { class: 'up-pn' }, name, h('em', null, ver)),
+            upIcon('link'), plus ? upHit(upIcon('plus', 'g')) : null, upIcon('power'), upIcon('trash'));
+        pane.append(
+            h('div', { class: 'up-top' },
+                h('div', { class: 'up-top-tx' },
+                    h('b', null, `새 버전이 나왔습니다 · v${VERSION} → v${upd.latest}`),
+                    h('span', null, '업데이트는 리수 설정에서 합니다. 아래 그림의 노란 테두리를 차례대로 누르세요.')),
+                h('div', { class: 'up-act' },
+                    h('button', { class: 'up-no', type: 'button', onclick: later }, '다음에'))),
+            h('div', { class: 'up-steps' },
+                upStep(1, '리수 왼쪽 위 ≡ 버튼', '이 패널을 닫으면 보입니다.',
+                    h('div', { class: 'up-scr' }, upSide(true, false), upChat()), '리수 화면 왼쪽 위의 줄 세 개 버튼'),
+                upStep(2, '톱니바퀴(설정)', '≡ 아래에 펼쳐진 칸의 맨 위입니다.',
+                    h('div', { class: 'up-scr' }, upSide(false, true), upChat()), '≡ 아래 펼쳐진 칸 맨 위의 톱니바퀴'),
+                upStep(3, '메뉴에서 「플러그인」', null,
+                    h('div', { class: 'up-menu' }, MENU.map(m => m === '플러그인' ? upHit(h('span', { class: 'up-mi on' }, upIcon('code'), m)) : h('span', { class: 'up-mi' }, m))),
+                    '설정 메뉴의 플러그인 항목'),
+                upStep(4, '「📖 챠위키」 줄의 초록색 +', '+ 는 새 버전이 있을 때만 챠위키 이름 줄 오른쪽에 생깁니다.',
+                    h('div', { class: 'up-plug' },
+                        h('b', { class: 'up-pt' }, '플러그인'),
+                        h('span', { class: 'up-warn' }, '악성 플러그인 설치 시 문제가 생길 수 있습니다.'),
+                        h('div', { class: 'up-list' },
+                            row('🎨 다른 플러그인', 'v1.0.0', false, true),
+                            row('📖 챠위키', `v${VERSION}`, true, false),
+                            row('📏 리사이징', 'v4.2.0', false, true))),
+                    '플러그인 목록에서 챠위키 줄의 초록색 더하기 버튼'),
+                upStep(5, '확인 창에서 YES', null,
+                    h('div', { class: 'up-dlg' },
+                        h('div', { class: 'up-box' },
+                            h('p', null, '플러그인 업데이트가 발견되었습니다. 업데이트를 설치하시겠습니까?'),
+                            h('div', { class: 'up-yn' }, upHit(h('span', { class: 'up-yes' }, 'YES')), h('span', { class: 'up-no2' }, 'NO')))),
+                    '업데이트를 설치할지 묻는 창의 YES 버튼')),
+            h('div', { class: 'up-after' },
+                h('b', null, '설치가 끝나면'),
+                h('ul', null,
+                    h('li', null, '만들어 둔 위키와 챠위키 설정은 그대로 남습니다. 리수 플러그인 설정의 「원문 최대 글자 수」만 비워지니, 바꿔 썼다면 다시 넣어 주세요.'),
+                    h('li', null, '권한을 묻는 창이 뜨면 모두 허용(YES)을 누릅니다. 거절하면 위키를 만들거나 열 수 없습니다.'),
+                    h('li', null, '초록색 + 가 보이지 않으면(예전 버전을 설치한 경우), 깃허브(github.com/daelar99-rgb/char_wiki)에서 챠위키.js 를 받은 뒤 플러그인 목록 아래의 + 로 한 번 직접 설치합니다. 그다음부터는 + 가 뜹니다.'))));
+        return pane;
     }
 
     function renderFoot() {
@@ -2403,6 +2563,7 @@ html:has(body.cw-on){background:transparent;overflow-y:scroll}
         }
         if (!ui.root.isConnected) doc.body.append(ui.root);
         ui.tab = 'wiki';
+        void checkUpdate();
         const load = { label: '봇을 확인하는 중', span: [0, 0.4] };
         renderLoading(load);
         void api.showContainer('fullscreen');
