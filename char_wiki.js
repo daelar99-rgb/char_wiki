@@ -1,7 +1,7 @@
 //@name char_wiki
-//@display-name 📖 챠위키 v2.10.2
+//@display-name 📖 챠위키 v2.10.4
 //@api 3.0
-//@version 2.10.2
+//@version 2.10.4
 //@update-url https://raw.githubusercontent.com/daelar99-rgb/char_wiki/main/char_wiki.js
 //@link https://github.com/daelar99-rgb/char_wiki 깃허브
 //@arg source_limit int 한 번에 모델에 보낼 원문 최대 글자 수 (비우면 40000)
@@ -10,7 +10,7 @@
     'use strict';
     const api = typeof Risuai !== 'undefined' ? Risuai : risuai;
     const LOG = '[챠위키]';
-    const VERSION = '2.10.2';
+    const VERSION = '2.10.4';
     const DEV_URL = 'https://github.com/daelar99-rgb';
     const UPDATE_URL = 'https://raw.githubusercontent.com/daelar99-rgb/char_wiki/main/char_wiki.js';
     const GH_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>';
@@ -3128,9 +3128,13 @@ html:has(body.cw-on){background:transparent;overflow-y:scroll}
         + '</g>'
         + '<text x="10" y="26.97" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">챠위키</text>'
         + '</svg>';
+    const INBTN_ICON = SIDE_ICON.replace('width="20" height="20"', 'width="17" height="17"');
+    const MENU_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20" overflow="visible">'
+        + '<text x="10" y="15.5" text-anchor="middle" font-size="17">📖</text>'
+        + '</svg>';
 
     const IN_CLASS = 'cw-inbtn ml-4 bg-textcolor2 flex justify-center items-center w-12 h-12 rounded-md hover:bg-blue-500 transition-colors text-textcolor';
-    const inBtn = { doc: null, asked: false, on: false, observer: null, clickId: '', timer: 0, job: Promise.resolve() };
+    const inBtn = { doc: null, asked: false, on: false, observer: null, clickId: '', timer: 0, job: Promise.resolve(), kids: '' };
     const inQueue = fn => (inBtn.job = inBtn.job.then(fn).catch(error => console.warn(LOG, 'input button', error)));
 
     async function rootDoc() {
@@ -3145,18 +3149,60 @@ html:has(body.cw-on){background:transparent;overflow-y:scroll}
         return inBtn.doc;
     }
 
+    async function inputRow(d) {
+        const area = await d.querySelector('textarea.text-input-area');
+        return area ? await area.getParent() : null;
+    }
+
+    const IN_GAP = '6px';
+    const IN_EDGE = '0.375rem';
+    const IN_TAIL = '-10px';
+    async function tightenButtons(row, force = false) {
+        const kids = await row.getChildren();
+        const n = await kids.length();
+        const items = [];
+        for (let i = 0; i < n; i++) {
+            const k = await kids.at(i);
+            const cls = String(await k.getClassName() ?? '');
+            if (cls.includes('text-input-area')) break;
+            items.push([k, cls]);
+        }
+        const sign = n + '|' + items.map(x => x[1]).join('|');
+        if (sign === inBtn.kids && !force) return;
+        inBtn.kids = sign;
+        const isBtn = cls => /(^|\s)w-12(\s|$)/.test(cls);
+        const tail = items.length && isBtn(items[items.length - 1][1]) ? items.length - 1 : -1;
+        let first = true;
+        for (let i = 0; i < items.length; i++) {
+            const [k, cls] = items[i];
+            if (!isBtn(cls)) continue;
+            const now = await k.getStyle('marginLeft');
+            const want = first ? IN_EDGE : IN_GAP;
+            first = false;
+            if (now !== want) await k.setStyle('marginLeft', want);
+            const right = await k.getStyle('marginRight');
+            if (i === tail) { if (right !== IN_TAIL) await k.setStyle('marginRight', IN_TAIL); }
+            else if (right === IN_TAIL) await k.setStyle('marginRight', '');
+        }
+    }
+
     async function placeInputButton() {
         const d = inBtn.doc;
-        if (!inBtn.on || !d || await d.querySelector('.cw-inbtn')) return;
-        const area = await d.querySelector('textarea.text-input-area');
-        const row = area ? await area.getParent() : null;
+        if (!inBtn.on || !d) return;
+        const row = await inputRow(d);
         if (!row || !inBtn.on) return;
+        if (await d.querySelector('.cw-inbtn')) return tightenButtons(row);
         const b = await d.createElement('button');
         await b.setClassName(IN_CLASS);
         await b.setStyle('cursor', 'pointer');
         await b.setStyle('flexShrink', '0');
-        await b.setInnerHTML(SIDE_ICON);
-        if (inBtn.on && !await d.querySelector('.cw-inbtn')) await row.prepend(b);
+        await b.setStyle('width', '2.25rem');
+        await b.setStyle('height', '2.25rem');
+        await b.setStyle('alignSelf', 'center');
+        await b.setInnerHTML(INBTN_ICON);
+        if (!inBtn.on || await d.querySelector('.cw-inbtn')) return;
+        await row.prepend(b);
+        await tightenButtons(row, true);
     }
 
     async function onRootDocClick(event) {
@@ -3198,6 +3244,11 @@ html:has(body.cw-on){background:transparent;overflow-y:scroll}
             inBtn.clickId = '';
         }
         try { await (await d.querySelector('.cw-inbtn'))?.remove(); } catch {}
+        try {
+            const row = await inputRow(d);
+            if (row) await tightenButtons(row, true);
+        } catch {}
+        inBtn.kids = '';
     }
 
     async function toggleInputButton() {
@@ -3216,7 +3267,7 @@ html:has(body.cw-on){background:transparent;overflow-y:scroll}
     const menuButtons = [];
     try {
         menuButtons.push(await api.registerButton({
-            name: '📖 챠위키', icon: ICON_SVG, iconType: 'html', location: 'chat', id: 'char-wiki-panel',
+            name: '챠위키', icon: MENU_ICON, iconType: 'html', location: 'chat', id: 'char-wiki-panel',
         }, onMenuButton));
     } catch (error) {
         console.warn(LOG, 'chat button', error);
