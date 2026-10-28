@@ -1,7 +1,7 @@
 //@name char_wiki
-//@display-name 📖 챠위키 v2.10.4
+//@display-name 📖 챠위키 v2.11.0
 //@api 3.0
-//@version 2.10.4
+//@version 2.11.0
 //@update-url https://raw.githubusercontent.com/daelar99-rgb/char_wiki/main/char_wiki.js
 //@link https://github.com/daelar99-rgb/char_wiki 깃허브
 //@arg source_limit int 한 번에 모델에 보낼 원문 최대 글자 수 (비우면 40000)
@@ -10,7 +10,7 @@
     'use strict';
     const api = typeof Risuai !== 'undefined' ? Risuai : risuai;
     const LOG = '[챠위키]';
-    const VERSION = '2.10.4';
+    const VERSION = '2.11.0';
     const DEV_URL = 'https://github.com/daelar99-rgb';
     const UPDATE_URL = 'https://raw.githubusercontent.com/daelar99-rgb/char_wiki/main/char_wiki.js';
     const GH_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>';
@@ -1599,19 +1599,26 @@ html:has(body.cw-on){background:transparent;overflow-y:scroll}
 .av-tag.face{left:auto;right:3px;background:var(--rose3)}
 .av-name{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;max-width:100%;overflow:hidden;font-size:.78rem;line-height:1.35;text-align:center;word-break:break-all}
 .av-hit{color:var(--rose3);background:var(--blush)}
-.av-none{padding:26px 10px;font-size:.86rem;text-align:center;color:var(--muted);background:var(--paper2);border:1px dashed var(--line2)}
+.av-none{display:grid;justify-items:center;gap:10px;padding:26px 10px;font-size:.86rem;text-align:center;color:var(--muted);background:var(--paper2);border:1px dashed var(--line2)}
 .ga-t{display:grid;gap:4px;align-content:start;justify-items:center;min-width:0;padding:5px 5px 6px;text-align:left;background:#fff;border:1px solid var(--line);transition:border-color .2s,background .2s}
 .ga-t:hover{background:var(--blush);border-color:var(--rose2)}
 .ga-t:hover .av-pic{border-color:var(--rose2)}
 .ga-t .av-name{min-height:2.7em}
-/* 칩 줄은 가로로 숨겨 밀지 않고 접어 내린다 — 오른쪽 끝 칩이 잘려 보이던 문제. 이름이 길면 칩 안에서 말줄임 */
+/* 칩 줄은 넓은 화면에서 접어 내린다. 이름이 길면 칩 안에서 말줄임.
+   2.11.0: 좁은 화면(600px 이하)에서는 한 줄로 두고 옆으로 민다 — 칩이 많으면 줄이 쌓여 그림이 화면 아래로 밀려나기 때문 (사용자 결정 2026-10-28).
+   예전에 오른쪽 끝 칩이 잘려 보이던 문제는, 칩이 더 있을 때만 오른쪽 끝을 흐리게 해서(.more) 일부러 잘린 것임을 보여 준다 */
 .gp-jump{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
-.gp-jump button{flex:none;max-width:100%;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px 0 4px;font-size:.8rem;background:#fff;border:1px solid var(--line)}
+.gp-jump button{flex:none;max-width:100%;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px 0 4px;font-size:.8rem;background:#fff;border:1px solid var(--line);transition:background .15s,border-color .15s,color .15s}
 .gp-jump button:hover{background:var(--blush);border-color:var(--rose2)}
 .gp-jump button i{flex:none;width:24px;height:24px;background:var(--c,#999) center/cover}
 .gp-jump button i.ic{display:grid;place-items:center;padding:4px;color:#fff}
 .gp-jump button span{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .gp-jump small{flex:none;font-family:var(--f-num);font-style:italic;font-size:1rem;color:var(--muted)}
+/* 2.11.0 고른 칩은 그 묶음 색으로 칠한다 (「전체」는 위키 초록). 찾는 말에 맞는 그림이 없는 칩은 흐리게 */
+.gp-jump button[aria-pressed="true"]{font-weight:700;color:#fff;background:var(--c);border-color:var(--c)}
+.gp-jump button[aria-pressed="true"] small{color:#fff;opacity:.85}
+.gp-jump button[aria-pressed="true"] i{box-shadow:0 0 0 1px #fff}
+.gp-jump button.zero:not([aria-pressed="true"]){opacity:.45}
 .gp-s{margin-top:18px;scroll-margin-top:12px}
 .gp-h{display:flex;align-items:center;gap:10px;margin:0 0 8px;padding:0 0 6px;border-bottom:2px solid var(--c,var(--line))}
 .gp-h>div{min-width:0}
@@ -1679,6 +1686,9 @@ html:has(body.cw-on){background:transparent;overflow-y:scroll}
   .nw-idx th{width:32%;padding:5px 6px;white-space:normal;word-break:keep-all;overflow-wrap:anywhere}
   .gp-g{grid-template-columns:repeat(auto-fill,minmax(84px,1fr))}
   .gp-g.wide{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+  .gp-jump{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .gp-jump::-webkit-scrollbar{display:none}
+  .gp-jump.more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent)}
 }
 @media (max-width:420px){
   .wk-list{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -1761,7 +1771,7 @@ html:has(body.cw-on){background:transparent;overflow-y:scroll}
     }
 
     const ui = { root: null, fit: null, tab: 'wiki', lastTab: null, lastSel: null, animPane: false, animDoc: false, spRef: undefined, spOpen: new Set(), det: new Set() };
-    const av = { key: '', q: '', sig: '', pane: null, body: null, pool: [], faces: new Map(), io: null, queue: [], running: 0, urls: new Map(), reading: new Map(), want: new WeakMap(), lb: null, lbEl: null, lbTok: null, toast: null, toastTimer: 0 };
+    const av = { key: '', q: '', sel: null, groups: [], cast: 0, input: null, sig: '', pane: null, body: null, pool: [], faces: new Map(), io: null, ro: null, queue: [], running: 0, urls: new Map(), reading: new Map(), want: new WeakMap(), lb: null, lbEl: null, lbTok: null, toast: null, toastTimer: 0 };
 
     function render() {
         if (!ui.root) return;
@@ -1927,6 +1937,7 @@ html:has(body.cw-on){background:transparent;overflow-y:scroll}
         next: lineSvg('<path d="M9 18l6-6-6-6"/>'),
         bg: lineSvg('<path d="M3 20h18M5 20V9l7-5 7 5v11"/><path d="M10 20v-5h4v5"/>'),
         etc: lineSvg('<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>'),
+        all: lineSvg('<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>'),
     };
     const AV_LIMIT = 4;
 
@@ -1976,8 +1987,7 @@ html:has(body.cw-on){background:transparent;overflow-y:scroll}
     }
 
     function avGroups(pool, cast) {
-        const q = av.q.trim().toLowerCase();
-        const list = q ? pool.filter(a => a.low.includes(q)) : pool;
+        const list = pool;
         const out = [];
         const used = new Set();
         const BG = /^(bg|cg|b)[_\s]/i;
@@ -2042,6 +2052,7 @@ html:has(body.cw-on){background:transparent;overflow-y:scroll}
             av.reading.clear();
             av.key = st.key;
             av.q = '';
+            av.sel = null;
         }
         av.io?.disconnect();
         av.queue.length = 0;
@@ -2072,8 +2083,12 @@ html:has(body.cw-on){background:transparent;overflow-y:scroll}
                     h('div', null, h('dt', null, '보여 주지 않는 것'), h('dd', null, '모듈 에셋 · 다른 봇의 에셋')))));
             return pane;
         }
+        const cast = (st.wiki?.people ?? []).filter(p => !p.isUser);
+        av.faces = new Map(cast.filter(p => p.face).map(p => [String(p.face).toLowerCase(), p]));
+        av.groups = avGroups(av.pool, cast);
+        av.cast = cast.length;
         const n = k => av.pool.filter(a => a.kind === k).length;
-        const input = h('input', { type: 'search', placeholder: '에셋 이름 찾기', autocomplete: 'off', 'aria-label': '에셋 이름 찾기', value: av.q });
+        const input = av.input = h('input', { type: 'search', placeholder: '에셋 이름 찾기', autocomplete: 'off', 'aria-label': '에셋 이름 찾기', value: av.q });
         const clr = h('button', {
             class: 'av-clr', type: 'button', 'aria-label': '찾는 말 지우기', title: '지우기', html: SVG_X,
             onclick: e => { e.preventDefault(); input.value = ''; input.dispatchEvent(new Event('input')); input.focus(); },
@@ -2091,35 +2106,71 @@ html:has(body.cw-on){background:transparent;overflow-y:scroll}
         return pane;
     }
 
-    function avFill() {
+    function avFill(focus) {
         if (!av.body) return;
         av.io?.disconnect();
         av.queue.length = 0;
-        const cast = (st.wiki?.people ?? []).filter(p => !p.isUser);
-        av.faces = new Map(cast.filter(p => p.face).map(p => [String(p.face).toLowerCase(), p]));
-        const gs = avGroups(av.pool, cast);
-        const flat = gs.flatMap(g => g.items);
+        const all = av.groups;
+        if (av.sel === null || (av.sel && !all.some(g => g.key === av.sel))) av.sel = all.find(g => /^[px]/.test(g.key))?.key ?? '';
         const q = av.q.trim();
+        const low = q.toLowerCase();
+        const hit = low ? all.map(g => ({ ...g, items: g.items.filter(a => a.low.includes(low)) })) : all;
+        const total = hit.reduce((n, g) => n + g.items.length, 0);
+        const gs = hit.filter(g => g.items.length && (!av.sel || g.key === av.sel));
+        const picked = all.find(g => g.key === av.sel);
+        if (av.input) {
+            const ph = picked ? `「${picked.title}」에서 찾기` : '에셋 이름 찾기';
+            av.input.placeholder = ph;
+            av.input.setAttribute('aria-label', ph);
+        }
+        const flat = gs.flatMap(g => g.items);
         const tile = a => h('button', { class: 'ga-t', type: 'button', title: a.name, onclick: () => avOpen(flat, flat.indexOf(a)) },
             avPic(a, true), h('span', { class: 'av-name' }, avMark(a.name, q)));
-        const chip = g => {
+        const pick = key => {
+            av.sel = key && av.sel === key ? '' : key;
+            avFill(av.sel);
+        };
+        const chip = (g, cnt) => {
             const i = g.ic ? h('i', { class: 'ic', html: g.ic }) : h('i');
             if (!g.ic && g.face) avPaint(i, g.face);
             return h('button', {
-                type: 'button', style: `--c:${g.c}`, title: g.title,
-                onclick: () => ui.root?.querySelector('#cw-gp-' + g.key)?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
-            }, i, h('span', null, g.title), h('small', null, String(g.items.length)));
+                type: 'button', class: cnt ? null : 'zero', style: `--c:${g.c}`, title: g.title,
+                'data-sel': g.key, 'aria-pressed': String(av.sel === g.key), onclick: () => pick(g.key),
+            }, i, h('span', null, g.title), h('small', null, String(cnt)));
         };
+        const chipAll = h('button', {
+            type: 'button', style: '--c:var(--rose)', title: '모든 묶음 보기',
+            'data-sel': '', 'aria-pressed': String(!av.sel), onclick: () => pick(''),
+        }, h('i', { class: 'ic', html: AV_IC.all }), h('span', null, '전체'), h('small', null, String(total)));
         const sec = g => h('section', { class: 'gp-s', id: 'cw-gp-' + g.key, style: `--c:${g.c}` },
             h('div', { class: 'gp-h' },
                 g.ic || !g.face ? h('span', { class: 'gp-sq', html: g.ic ?? AV_IC.img }) : avPic(g.face, false),
                 h('div', null, h('h3', null, g.title), h('span', null, `${g.sub ? g.sub + ' · ' : ''}${g.items.length}개`))),
             h('div', { class: 'gp-g' + (g.wide ? ' wide' : '') }, g.items.map(tile)));
+        const jump = h('div', { class: 'gp-jump' }, chipAll, all.map((g, k) => chip(g, hit[k].items.length)));
         const parts = [];
-        if (!cast.length) parts.push(h('div', { class: 'gp-fb' }, '위키가 아직 없어 이름 앞부분이 같은 그림끼리 묶었습니다 (c_dean_smile → dean). 위키를 만들면 위키 인물별로 묶입니다.'));
-        if (gs.length) parts.push(h('div', { class: 'gp-jump' }, gs.map(chip)), ...gs.map(sec));
+        if (!av.cast) parts.push(h('div', { class: 'gp-fb' }, '위키가 아직 없어 이름 앞부분이 같은 그림끼리 묶었습니다 (c_dean_smile → dean). 위키를 만들면 위키 인물별로 묶입니다.'));
+        parts.push(jump);
+        if (gs.length) parts.push(...gs.map(sec));
+        else if (picked) parts.push(h('div', { class: 'av-none' },
+            h('span', null, q ? `「${q}」 이름의 에셋이 「${picked.title}」 묶음에 없습니다.` : `「${picked.title}」 묶음에 에셋이 없습니다.`),
+            total ? h('button', { class: 'cw-btn', type: 'button', onclick: () => pick('') }, `전체에서 찾기 (${total}개)`) : null));
         else parts.push(h('div', { class: 'av-none' }, `「${q}」 이름의 에셋이 없습니다.`));
+        const keep = av.body.querySelector('.gp-jump')?.scrollLeft ?? 0;
         av.body.replaceChildren(...parts);
+        jump.scrollLeft = keep;
+        const more = () => jump.classList.toggle('more', jump.scrollLeft + jump.clientWidth < jump.scrollWidth - 1);
+        jump.addEventListener('scroll', more, { passive: true });
+        av.ro?.disconnect();
+        const RO = (doc.defaultView ?? globalThis).ResizeObserver;
+        av.ro = RO ? new RO(more) : null;
+        av.ro?.observe(jump);
+        if (focus != null) {
+            const b = jump.querySelector(`[data-sel="${focus}"]`);
+            b?.focus({ preventScroll: true });
+            b?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        }
+        (doc.defaultView ?? globalThis).requestAnimationFrame(more);
     }
 
     function avMark(name, q) {
